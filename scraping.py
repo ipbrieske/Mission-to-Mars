@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup as soup
 from webdriver_manager.chrome import ChromeDriverManager
 import datetime as dt
 import pandas as pd
-import Mission_to_Mars.py
+import Mission_to_Mars
 
 def scrape_all():
     #Set up Splinter
@@ -14,15 +14,14 @@ def scrape_all():
     browser = Browser('chrome', **executable_path, headless=True)
     
     news_title, news_paragraph = mars_news(browser)
-    hemisphere = hemiScrape(browser)
 
     data = {
-        'news_title': news_title, 
+        "news_title": news_title, 
         "news_paragraph": news_paragraph,
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
         "last_modified": dt.datetime.now(),
-        "hemisphere": {}
+        #"hemispheres": hemiScrape(browser)
     }
     browser.quit()
     return data
@@ -94,6 +93,25 @@ def mars_facts():
 
 def hemiScrape(browser):
 
+    url = 'https://marshemispheres.com/'
+    browser.visit(url)
+
+    #Create a list to hold the images and titles.
+    hemisphere_image_urls = []
+
+    html = browser.html
+    hiRes_soup = soup(html, 'html.parser')
+    items = hiRes_soup.find_all('div', 'item')
+    
+    for item in items:
+        hiResLink = 'https://marshemispheres.com/' + str(item.a['href'])
+        browser.visit(hiResLink)
+        photoSoup = soup(browser.html, 'html.parser')
+        title = photoSoup.find('h2', 'title').text
+        photo = 'https://marshemispheres.com/' + photoSoup.find('img', 'wide-image')['src']
+        hemisphere_image_urls.append({'title': title, 'img_url': photo})
+    
+    return hemisphere_image_urls
 
 if __name__ == '__main__':
     # If running as script, print scraped data
