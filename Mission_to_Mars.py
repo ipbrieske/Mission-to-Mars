@@ -79,7 +79,8 @@ browser.visit(url)
 # 2. Create a list to hold the images and titles.
 hemisphere_image_urls = []
 
-# 3. Write code to retrieve the image urls and titles for each hemisphere.
+# 3. Write code to retrieve the image urls and titles for ea
+# ch hemisphere.
 html = browser.html
 hiRes_soup = soup(html, 'html.parser')
 items = hiRes_soup.find_all('div', 'item')
