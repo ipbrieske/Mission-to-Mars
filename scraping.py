@@ -21,7 +21,7 @@ def scrape_all():
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
         "last_modified": dt.datetime.now(),
-        #"hemispheres": hemiScrape(browser)
+        "hemispheres": hemiScrape(browser)
     }
     browser.quit()
     return data
